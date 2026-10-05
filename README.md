@@ -212,7 +212,7 @@ Multi-user analytics comparison
 
 👨‍💻 Author
 
-Rehanshu Gupta
-GitHub: https://github.com/rehanshuraj
+Ayushman Singh
+
 
 

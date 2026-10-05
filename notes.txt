@@ -1,0 +1,448 @@
+TASK 1: file and folders structure :-
+        backend/
+        │
+        ├── controllers/
+        │   └── analyze.controller.js
+        │
+        ├── graphql/
+        │   └── queries.js
+        │
+        ├── routes/
+        │   └── auth.js
+        │
+        ├── services/
+        │   ├── github.service.js
+        │   ├── commit.service.js
+        │   ├── commitScore.js
+        │
+        ├── utils/
+        │   └── commitClassifier.js
+        │
+        ├── repoFilter.js
+        │
+        ├── .env
+        ├── server.js
+        └── package.json
+
+
+        step1: setup server.js
+        step2: make routes folder and add routings in auth.js
+        step3: graphql/queries.js
+        step4: services/  - github.service.js
+                        - repoFilter.js
+                        - commit.service.js
+        step5:  utils/commitClassifier.js
+        step6:  services/commitScore.js
+        step7:  controllers/analyze.controller.js
+
+explaination for task1:
+    -routes/auth.js
+       This file handles:
+        Logging in with GitHub
+        Getting permission
+        Returning a safe token to frontend
+
+
+        1.OAuth
+        OAuth is like this:
+
+            “Hey GitHub, can you allow my app to read this user’s repos?”
+            GitHub: “Only if the user agrees.”
+            User: “I agree.”
+            GitHub: “Okay, here’s a key (token). Use it carefully.”
+
+            That key = access token
+
+         FLOW:
+           - User logs in
+           - GitHub approves
+          -  Backend creates JWT
+           - User is sent to frontend with token
+           - Frontend stores JWT
+           - Frontend sends JWT in API requests
+
+        User clicks login
+        ↓
+        Backend redirects to GitHub
+        ↓
+        GitHub authenticates user
+        ↓
+        GitHub sends code
+        ↓
+        Backend exchanges code for token
+        ↓
+        Backend wraps token in JWT
+        ↓
+        Frontend uses JWT to request analysis
+
+###
+STATIC CODE COMPLEXITY USING AST(Abstract Syntax Tree)
+We will compute REAL engineering signals:
+
+1️⃣ Function length
+2️⃣ Cyclomatic complexity
+3️⃣ Nesting depth
+4️⃣ God functions
+5️⃣ Maintainability signals
+
+Dependencies :-npm install @babel/parser @babel/traverse fs path
+@babel/parser → converts JS → AST
+@babel/traverse → walks through AST
+
+files and folders structure 
+    services/
+    └── codeAnalysis.service.js FILE → TEXT → AST → FUNCTION NODES → METRICS
+
+
+    utils/
+    └── complexityCalculator.js
+    This file teaches the computer:
+    how many decisions exist
+    how deep logic is buried
+    how large a function is
+    whether it’s becoming dangerous
+
+###
+Risky Coding Pattern Detector
+  Because:
+   - Bugs hide in them
+    -Security breaches start here
+   - Maintenance becomes hell
+   - Juniors write them unconsciously
+   - Seniors actively avoid the
+   - This is engineering maturity, not syntax.
+
+utils/
+ └── riskDetector.js
+
+This file:
+    looks at ONE function
+    reports risky patterns
+
+###
+FULL-EMS (Engineering Maturity Score)
+GitHub shows:
+
+stars ⭐
+followers 👥
+commits 📈
+
+But companies want:
+Can this person write maintainable code?
+Do they refactor or just pile up logic?
+Do they write safe, disciplined code?
+Are they consistent over time?
+
+So we create EMS = Engineering Maturity Score (0–100)
+EMS answers:
+“How mature is this engineer’s thinking in code?”
+What inputs does EMS need?
+    -Commit Quality Score (0–20)
+    - Code Complexity Metrics
+        cyclomatic complexity
+        nesting depth
+        god functions
+    -Risky Coding Patterns
+        secrets
+        empty catch
+        globals
+    -Consistency
+        steady commits
+        no massive spikes
+    -Refactor Signals
+        refactor commits exist
+    EMS is just combining intelligence, not magic.
+
+EMS Philosophy (VERY IMPORTANT)
+    We do NOT reward:
+    ❌ more commits
+    ❌ more repos
+    ❌ more LOC
+    We reward:
+    ✅ discipline
+    ✅ simplicity
+    ✅ improvement over time
+    ✅ safety
+    That’s why weights matter.
+services/
+ └── emsScore.service.js
+This file:
+    takes all metrics
+    normalizes them
+    outputs ONE score
+
+Bad engineers:  update
+                final
+                fix
+Good engineers: refactor: simplify auth logic
+                test: add edge case for null user
+
+
+##FLOW OF THE BACKENED
+server.js
+   ↓
+route (/analyze)
+   ↓
+controller
+   ↓
+services
+   ↓
+utils
+
+🧩 CONTROLLER FLOW 
+When someone hits:  GET /analyze/:username
+
+The controller does this:
+   - Get GitHub token from JWT
+    -Fetch repositories
+    -Analyze commits
+   - Analyze code complexity
+   -Detect risks
+   -Calculate EMS
+   - Send JSON response
+
+
+NOW NEXT:-
+
+Code analysis (analyzeFile)
+Risk detection (detectRisks)
+
+require downloading repo files.
+That is the NEXT step.
+functionNode comes from parsing real .js files
+GitHub ZIP download - best for backened faster and secure 
+GitHub Repo
+ → Download files
+ → Read .js files
+ → Parse AST
+ → Complexity + Risk
+ → EMS
+ Dependencies : npm install unzipper
+    
+When you call: downloadRepo("rehanshu", "AIvora", accessToken)
+
+It:
+    Downloads repo as ZIP
+    Saves it locally
+    Extracts all files
+    Returns folder path like: /backend/temp/AIvora/
+
+
+NOW Reading .js files from the downloaded repo
+Add this helper inside
+📍 services/codeAnalysis.service.js
+
+Connecting DOWNLOAD → ANALYSIS (CRITICAL)
+Inside
+📍 controllers/analyze.controller.js
+
+## FULL PIPELINE
+GitHub API
+   ↓
+Repo ZIP Download
+   ↓
+Extract Files
+   ↓
+Read .js Files
+   ↓
+AST Parsing
+   ↓
+Complexity + Risk
+   ↓
+EMS Score
+
+✔ GitHub OAuth
+✔ Commit intelligence
+✔ Repo downloading
+✔ Static code analysis
+✔ Risk detection
+✔ EMS calculation
+
+
+PROBLEMS
+❌ Problem 1: EMS always too high (90–100)
+    Why it happens
+      Few functions analyzed
+      No risks detected
+      Small repos
+    Reality
+     Small codebase ≠ good engineering
+
+❌ Problem 2: EMS always too low (20–30)
+Why it happens
+    Many utility functions counted equally
+    One bad file ruins entire score
+    Complexity penalties too aggressive
+    
+❌ Problem 3: Same score for very different developers
+Why it happens
+    No normalization
+    Repo size ignored
+    Time window ignored
+
+FRONTEND
+React Dashboard (EMS + Graphs)
+
+Frontend Structure (Simple)
+frontend/
+│
+├── package.json
+│
+├── src/
+│   ├── main.jsx
+│   ├── App.jsx
+│   │
+│   ├── api/
+│   │   └── githubApi.js
+│   │
+│   ├── pages/
+│   │   ├── Login.jsx
+│   │   └── Dashboard.jsx
+│   │
+│   ├── components/
+│   │   ├── EMSMeter.jsx
+│   │   ├── StatCard.jsx
+│   │   └── Loader.jsx
+│   │
+│   └── styles/
+│       └── global.css
+
+
+Login.jsx
+  → /auth/github (backend)
+  → GitHub OAuth
+  → redirect /dashboard?token=JWT
+
+Dashboard.jsx
+  → /analyze/:username
+  → backend analyzes
+  → EMS JSON returned
+  → UI renders insights
+
+
+MY APP OVERVIEW
+
+1️⃣ Commit Quality (Primary Focus)
+What it measures
+    Commit size
+    Commit frequency
+    Commit intent (via message analysis)
+    ComMit discipline
+
+Why it matters
+Good engineers:
+    Commit often but meaningfully
+    Avoid giant dump commits
+    Use commits as documentation
+
+How your app detects it
+    Analyzes all commits across all repos
+    Scores commits based on:
+        Lines added/deleted
+        Message patterns
+        Distribution over time
+
+📌 Output in UI
+Commit Quality Score (0–10)
+Total Commits
+
+2️⃣ Refactoring Behavior (Very Important Signal)
+What it measures
+    How often the developer improves existing code
+    Not just adding features, but cleaning structure
+
+Why it matters
+    Refactoring shows:
+        Long-term thinking
+        Maintainability mindset
+        Senior-level engineering maturity
+
+How your app detects it
+A commit is counted as refactor only if:
+    Commit message contains “refactor”
+    AND meaningful code change (> 20 lines)
+
+📌 Output in UI
+Refactor Commits
+
+3️⃣ Repository Filtering (Signal Cleaning)
+What it does
+Removes repos that don’t represent engineering effort, such as:
+    Forks
+    Empty repos
+    Config-only repos
+    Low-activity repos
+
+Why it matters
+Without filtering:
+    Noise pollutes analysis
+    Results become misleading
+
+Your app ensures:
+    only real engineering work is analyzed
+
+📌 Internal impact
+    Makes commit score fair
+    Prevents score inflation
+
+4️⃣ Static Code Analysis (Code-Level Intelligence)
+What it measures
+    Function complexity
+    Function size
+    Nesting depth
+    “God functions”
+
+Why it matters
+    This answers:
+        “What kind of code does this developer write?”
+
+Not just how often, but how well.
+
+How your app does it
+    Downloads repos locally
+    Parses JavaScript files using Babel AST
+    Traverses function nodes
+    Extracts metrics per function
+
+📌 Output in UI
+Functions Analyzed
+(Complexity metrics ready for EMS)
+
+5️⃣ Cross-Repository Aggregation (Big Picture)
+What it does
+Instead of analyzing one repo:
+    Combines data across all relevant repos
+    Produces a developer-level profile
+
+Why it matters
+A single repo can lie.
+Patterns across repos don’t.
+
+Your app detects:
+    Consistency
+    Engineering habits
+    Long-term behavior
+
+6️⃣ Security-First OAuth Design
+What it does
+    Uses GitHub OAuth
+    Stores GitHub token inside JWT
+    Never exposes GitHub token to frontend
+
+Why it matters
+Shows:
+    Real-world backend security understanding
+    Production-ready auth flow
+
+7️⃣ Engineering Maturity Signals (Hidden Strength)
+
+Your app indirectly measures:
+
+Signal	             how
+Maintainability	   Refactors + complexity
+Discipline	       Commit size patterns
+Experience         Refactor frequency
+Ownership	       Commit history depth
+Code health	       AST metrics
+
+This is exactly what hiring managers care about.
